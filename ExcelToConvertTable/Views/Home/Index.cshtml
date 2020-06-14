@@ -50,8 +50,6 @@
             </div>
 
             <div id="domMessage" style="display:none;">
-                @*<center><img src="~/images/op2.png" style="width:205px;height:70px" /></center>
-                    <br />*@
                 <img src="~/Images/786.gif" style="width:90px; height:90px;" /><br />
                 <br />
                 <h4><b>Lütfen Bekleyin.  İşlem Devam Ediyor ...</b></h4>
@@ -65,23 +63,29 @@
 
         $("#loading").click(function () {
             debugger;
-            alert("sdfds");
-   
-            var input = document.getElementById('selectFile');
+
+            var file = $("#selectFile").get(0).files;
+            var data = new FormData;
+            data.append("excelFile", file[0]);
+
+
+            var formData = new FormData();
+            formData.append("excelFile", $("#selectFile").file);
 
             $.ajax({
-                type: 'POST',
-                dataType: 'JSON',
-                contentType: 'application/json charset=utf=8',
-                url: '/Home/UploadExcel',
-                data: input,
+                method: "POST",
+                url: "/Home/UploadExcel",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     $.blockUI({ message: $('#domMessage') });
 
                 }
-            }).done(function (d) {
-                //$("#nav-home").html(d);
-
+            }).done(function (data) {
+                $.unblockUI();
+                window.location.href = '@Url.Action("Index", "Home")' + '?' + $.param(data);
 
             }).always(function () {
                 RefreshOfferFooter();
