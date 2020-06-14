@@ -1,0 +1,135 @@
+﻿
+@using ExcelToConvertTable.Models
+@model PersonModel
+
+<div class="col-md-12">
+    <div class="table-responsive">
+        <table id="mytable" class="table table-bordred table-striped" style="margin-top:50px">
+
+            <thead>
+                <tr>
+                    <th>TC</th>
+                    <th>Ad Soyad</th>
+                    <th>Email</th>
+                    <th>Adres</th>
+                    <th>Telefon</th>
+
+                </tr>
+            </thead>
+
+            @if (Model.PersonList != null && Model.PersonList.Count > 0)
+            {
+
+                foreach (var item in Model.PersonList)
+                {
+                    <tbody>
+                        <tr>
+                            <td name="TC" value="@item.TC">@item.TC</td>
+                            <td name="FullName" value="@item.FullName">@item.FullName</td>
+                            <td name="Email" value="@item.Email">@item.Email</td>
+                            <td name="Address" value="@item.TC">@item.Address</td>
+                            <td name="PhoneNumber" value="@item.PhoneNumber">@item.PhoneNumber</td>
+                        </tr>
+
+                    </tbody>
+                }
+                <input type="button" id="btnSaveData" value="Veri tabanına kaydet" name="SaveData" class="btn btn-primary" style="margin-top:50px" />
+            }
+
+        </table>
+
+        <button type="button" id="loading">Bekleniyor</button>
+
+        <div id="domMessage" style="display:none;">
+            @*<center><img src="~/images/op2.png" style="width:205px;height:70px" /></center>
+            <br />*@
+            <img src="~/images/786.gif" style="width:90px; height:90px;" /><br />
+            <br />
+            <h4><b>Lütfen Bekleyin.  İşlem Devam Ediyor ...</b></h4>
+
+        </div>
+
+    </div>
+</div>
+
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="~/Scripts/bootbox.min.js"></script>
+<script src="~/Scripts/jquery.blockUI.js"></script>
+
+@if (@ViewBag.Error != null)
+{
+    <script>
+        var message = @Html.Raw(Json.Encode(ViewBag.Error));
+        bootbox.alert(message);
+    </script>
+}
+
+<script>
+
+    $(document).ready(function () {
+        $("#btnSaveData").click(function () {
+            debugger;
+            SavePersonRecords();
+        });
+    });
+
+
+    function SavePersonRecords() {
+
+        var listOfPersonDetailModel = new Array();
+
+        $("#mytable").find("tr:gt(0)").each(function () {
+            var TC = $(this).find("td:eq(0)").text();
+            var FullName = $(this).find("td:eq(1)").text();
+            var Email = $(this).find("td:eq(2)").text();
+            var Address = $(this).find("td:eq(3)").text();
+            var PhoneNumber = $(this).find("td:eq(4)").text();
+
+            var Person = {};
+            Person.TC = TC;
+            Person.FullName = FullName;
+            Person.Email = Email;
+            Person.Address = Address;
+            Person.PhoneNumber = PhoneNumber;
+
+            listOfPersonDetailModel.push(Person);
+        });
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: 'application/json charset=utf=8',
+            url: '/Home/SaveDatabase',
+            data: JSON.stringify(listOfPersonDetailModel),
+            success: function (result) {
+                if (result == true) {
+                    bootbox.alert("Veri tabanına kaydedildi");
+                  
+                }
+                else alert("Veri tabanına sırasında hata oluştu");
+            },
+            error: function () {
+                bootbox.alert("Hata var");
+            }
+
+        });
+
+    }
+
+
+
+    
+
+</script>
