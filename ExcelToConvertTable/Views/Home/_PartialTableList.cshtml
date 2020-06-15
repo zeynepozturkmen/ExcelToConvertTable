@@ -2,6 +2,8 @@
 @using ExcelToConvertTable.Models
 @model PersonModel
 
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
 <div class="col-md-12">
     <div class="table-responsive">
         <table id="mytable" class="table table-bordred table-striped" style="margin-top:50px">
@@ -41,20 +43,7 @@
     </div>
 </div>
 
-
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="~/Scripts/bootbox.min.js"></script>
-<script src="~/Scripts/jquery.blockUI.js"></script>
 
 @if (@ViewBag.Error != null)
 {
@@ -105,7 +94,7 @@
             success: function (result) {
                 if (result == true) {
                     bootbox.alert("Veri tabanına kaydedildi");
-                  
+
                 }
                 else alert("Veri tabanına sırasında hata oluştu");
             },
@@ -119,3 +108,4 @@
 
 
 </script>
+

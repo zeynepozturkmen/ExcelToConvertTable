@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -21,7 +20,7 @@ namespace ExcelToConvertTable.Controllers
 
 
         [HttpPost]
-        public ActionResult UploadExcel(HttpPostedFileBase excelFile)
+        public PartialViewResult UploadExcel(HttpPostedFileBase excelFile)
         {
             PersonModel model = new PersonModel();
 
@@ -30,8 +29,7 @@ namespace ExcelToConvertTable.Controllers
             {
                 ViewBag.Error = "Lütfen dosya seçimi yapınız.";
 
-                //return Json(model, JsonRequestBehavior.AllowGet);
-                return View("Index", model);
+                return PartialView("~/Views/Home/_PartialTableList.cshtml", model);
             }
             else
             {
@@ -76,21 +74,18 @@ namespace ExcelToConvertTable.Controllers
                         }
 
                         application.Quit();
-                        return View("Index", model);
-                        //return Json(model, JsonRequestBehavior.AllowGet);
+                        return PartialView("~/Views/Home/_PartialTableList.cshtml", model);
                     }
                     else
                     {
                         ViewBag.Error = "Exceldeki kolon sayısı istenilen sayıda değil";
-                        return View("Index", model);
-                        //return Json(model);
+                        return PartialView("~/Views/Home/_PartialTableList.cshtml", model);
                     }
                 }
                 else
                 {
                     ViewBag.Error = "Dosya tipiniz yanlış, lütfen '.xls' yada '.xlsx' uzantılı dosya yükleyiniz.";
-                    return View("Index", model);
-                    //return Json(model);
+                    return PartialView("~/Views/Home/_PartialTableList.cshtml", model);
                 }
             }
         }

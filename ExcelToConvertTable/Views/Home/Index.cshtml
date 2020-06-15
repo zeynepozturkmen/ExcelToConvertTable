@@ -11,24 +11,14 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 </head>
 <body>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <div class="container">
         <div class="row">
 
-            <form action="/Home/UploadExcel" method="post" enctype="multipart/form-data">
+     
                 <div class="col-md-12">
                     <br />
                     <br />
@@ -37,27 +27,33 @@
                     <input type="file" name="excelFile" class="btn btn-default" id="selectFile" />
                     <div class="col-md-12">
                         <br />
-                        <input type="submit" name="Submit" value="Tabloya Aktar" class="btn btn-success" />
-
-                        <button type="button" id="loading">Bekleniyor</button>
+                        <button type="button" class="btn btn-success" id="loading">Tabloya Aktar</button>
                         <br />
                     </div>
                 </div>
-            </form>
+            
 
-            <div class="col-md-12" id="listDiv">
-                @Html.Partial(@"~\Views\Home\_PartialTableList.cshtml", Model)
-            </div>
 
-            <div id="domMessage" style="display:none;">
-                <img src="~/Images/786.gif" style="width:90px; height:90px;" /><br />
-                <br />
-                <h4><b>Lütfen Bekleyin.  İşlem Devam Ediyor ...</b></h4>
-
-            </div>
 
         </div>
+
+        <div class="col-md-12" id="listDiv">
+            @Html.Partial(@"~\Views\Home\_PartialTableList.cshtml", Model)
+        </div>
+
+
     </div>
+
+    <div id="domMessage" style="display:none;">
+        <img src="~/Images/786.gif" style="width:90px; height:90px;" /><br />
+        <br />
+        <h4><b>Lütfen Bekleyin.  İşlem Devam Ediyor ...</b></h4>
+
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.blockUI.js"></script>
 
     <script>
 
@@ -81,19 +77,16 @@
                 processData: false,
                 beforeSend: function () {
                     $.blockUI({ message: $('#domMessage') });
-
                 }
             }).done(function (data) {
-                $.unblockUI();
-                window.location.href = '@Url.Action("Index", "Home")' + '?' + $.param(data);
-
+                $("#listDiv").html(data);
             }).always(function () {
-                RefreshOfferFooter();
                 $.unblockUI();
             });
 
         });
     </script>
+
 </body>
 </html>
 
