@@ -91,32 +91,42 @@ namespace ExcelToConvertTable.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveDatabase(IEnumerable<PersonTable> PersonList)
+        public JsonResult SaveDatabase(IEnumerable<PersonTable> PersonTable)
         {
             var persons = new List<Person>();
+            var isSave = 0;
 
-            foreach (var item in PersonList)
+            foreach (var item in PersonTable)
             {
                 var person = new Person();
-                person.Tc = item.TC;
-                person.FullName = item.FullName;
-                person.Address = item.Address;
-                person.PhoneNumber = item.PhoneNumber;
-                person.Email = item.Email;
 
-                persons.Add(person);
+                var AnyPerson = db.People.Any(x => x.Tc == item.TC);
+                if (AnyPerson == false)
+                {
+                    person.Tc = item.TC;
+                    person.FullName = item.FullName;
+                    person.Address = item.Address;
+                    person.PhoneNumber = item.PhoneNumber;
+                    person.Email = item.Email;
+
+                    persons.Add(person);
+                }
             }
 
-            db.People.AddRange(persons);
-            var isSave = db.SaveChanges();
-            if (isSave > 0)
+            if (persons != null)
             {
+                db.People.AddRange(persons);
+                isSave = db.SaveChanges();
+
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
+            //veri tabanına daha önceden kayıt edilmiş demek
             else
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
+
+
         }
 
     }

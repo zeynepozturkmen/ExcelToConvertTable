@@ -18,20 +18,20 @@
     <div class="container">
         <div class="row">
 
-     
+
+            <div class="col-md-12">
+                <br />
+                <br />
+                <h4 class="col-md-2">Excel dosyası seç :</h4>
+
+                <input type="file" name="excelFile" class="btn btn-default" id="selectFile" />
                 <div class="col-md-12">
                     <br />
+                    <button type="button" class="btn btn-success" id="loading">Tabloya Aktar</button>
                     <br />
-                    <h4 class="col-md-2">Excel dosyası seç :</h4>
-
-                    <input type="file" name="excelFile" class="btn btn-default" id="selectFile" />
-                    <div class="col-md-12">
-                        <br />
-                        <button type="button" class="btn btn-success" id="loading">Tabloya Aktar</button>
-                        <br />
-                    </div>
                 </div>
-            
+            </div>
+
 
 
 
@@ -54,36 +54,53 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.blockUI.js"></script>
+    <script src="~/Scripts/bootbox.min.js"></script>
 
     <script>
 
         $("#loading").click(function () {
-            debugger;
+            bootbox.confirm({
+                message: "Tabloya aktarılsın mı!",
+                buttons: {
+                    confirm: {
+                        label: 'Evet',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Hayır',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result == true) {
+                        var file = $("#selectFile").get(0).files;
+                        var data = new FormData;
+                        data.append("excelFile", file[0]);
 
-            var file = $("#selectFile").get(0).files;
-            var data = new FormData;
-            data.append("excelFile", file[0]);
 
+                        var formData = new FormData();
+                        formData.append("excelFile", $("#selectFile").file);
 
-            var formData = new FormData();
-            formData.append("excelFile", $("#selectFile").file);
+                        $.ajax({
+                            method: "POST",
+                            url: "/Home/UploadExcel",
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            beforeSend: function () {
+                                $.blockUI({ message: $('#domMessage') });
+                            }
+                        }).done(function (data) {
+                            $("#listDiv").html(data);
+                        }).always(function () {
+                            $.unblockUI();
+                        });
 
-            $.ajax({
-                method: "POST",
-                url: "/Home/UploadExcel",
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function () {
-                    $.blockUI({ message: $('#domMessage') });
+                    }
                 }
-            }).done(function (data) {
-                $("#listDiv").html(data);
-            }).always(function () {
-                $.unblockUI();
             });
-
+          
         });
     </script>
 

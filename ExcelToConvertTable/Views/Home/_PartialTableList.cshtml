@@ -40,6 +40,14 @@
 
         </table>
 
+
+        <div id="domMessage" style="display:none;">
+            <img src="~/Images/786.gif" style="width:90px; height:90px;" /><br />
+            <br />
+            <h4><b>Lütfen Bekleyin.  İşlem Devam Ediyor ...</b></h4>
+
+        </div>
+
     </div>
 </div>
 
@@ -65,44 +73,104 @@
 
     function SavePersonRecords() {
 
-        var listOfPersonDetailModel = new Array();
-
-        $("#mytable").find("tr:gt(0)").each(function () {
-            var TC = $(this).find("td:eq(0)").text();
-            var FullName = $(this).find("td:eq(1)").text();
-            var Email = $(this).find("td:eq(2)").text();
-            var Address = $(this).find("td:eq(3)").text();
-            var PhoneNumber = $(this).find("td:eq(4)").text();
-
-            var Person = {};
-            Person.TC = TC;
-            Person.FullName = FullName;
-            Person.Email = Email;
-            Person.Address = Address;
-            Person.PhoneNumber = PhoneNumber;
-
-            listOfPersonDetailModel.push(Person);
-        });
-
-        $.ajax({
-            async: true,
-            type: 'POST',
-            dataType: 'JSON',
-            contentType: 'application/json charset=utf=8',
-            url: '/Home/SaveDatabase',
-            data: JSON.stringify(listOfPersonDetailModel),
-            success: function (result) {
-                if (result == true) {
-                    bootbox.alert("Veri tabanına kaydedildi");
-
+        bootbox.confirm({
+            message: "Veri tabanına kaydedilsin mi?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
                 }
-                else alert("Veri tabanına sırasında hata oluştu");
             },
-            error: function () {
-                bootbox.alert("Hata var");
-            }
+            callback: function (result) {
+                if (result==true) {
+                    var listOfPersonDetailModel = new Array();
 
+                    $("#mytable").find("tr:gt(0)").each(function () {
+                        var TC = $(this).find("td:eq(0)").text();
+                        var FullName = $(this).find("td:eq(1)").text();
+                        var Email = $(this).find("td:eq(2)").text();
+                        var Address = $(this).find("td:eq(3)").text();
+                        var PhoneNumber = $(this).find("td:eq(4)").text();
+
+                        var PersonTable = {};
+                        PersonTable.TC = TC;
+                        PersonTable.FullName = FullName;
+                        PersonTable.Email = Email;
+                        PersonTable.Address = Address;
+                        PersonTable.PhoneNumber = PhoneNumber;
+
+                        listOfPersonDetailModel.push(PersonTable);
+                    });
+
+                    $.ajax({
+                        async: true,
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: JSON.stringify({ PersonTable: listOfPersonDetailModel }),
+                        contentType: 'application/json charset=utf=8',
+                        url: '/Home/SaveDatabase',
+                        cache: false,
+                        processData: false,
+                        beforeSend: function () {
+                            $.blockUI({ message: $('#domMessage') });
+                        }
+                    }).done(function (result) {
+                        if (result == true) {
+                            bootbox.alert("Veri tabanına kaydedildi");
+
+                        }
+                        else bootbox.alert("Veri tabanına sırasında hata oluştu");
+                    }).always(function () {
+                        $.unblockUI();
+                    });
+                }
+            }
         });
+
+        //var listOfPersonDetailModel = new Array();
+
+        //$("#mytable").find("tr:gt(0)").each(function () {
+        //    var TC = $(this).find("td:eq(0)").text();
+        //    var FullName = $(this).find("td:eq(1)").text();
+        //    var Email = $(this).find("td:eq(2)").text();
+        //    var Address = $(this).find("td:eq(3)").text();
+        //    var PhoneNumber = $(this).find("td:eq(4)").text();
+
+        //    var PersonTable = {};
+        //    PersonTable.TC = TC;
+        //    PersonTable.FullName = FullName;
+        //    PersonTable.Email = Email;
+        //    PersonTable.Address = Address;
+        //    PersonTable.PhoneNumber = PhoneNumber;
+
+        //    listOfPersonDetailModel.push(PersonTable);
+        //});
+
+        //$.ajax({
+        //    async: true,
+        //    type: 'POST',
+        //    dataType: 'JSON',
+        //    data: JSON.stringify({ PersonTable: listOfPersonDetailModel }),
+        //    contentType: 'application/json charset=utf=8',
+        //    url: '/Home/SaveDatabase',
+        //    cache: false,
+        //    processData: false,
+        //    beforeSend: function () {
+        //        $.blockUI({ message: $('#domMessage') });
+        //    }
+        //}).done(function (result) {
+        //    if (result == true) {
+        //            bootbox.alert("Veri tabanına kaydedildi");
+
+        //        }
+        //        else alert("Veri tabanına sırasında hata oluştu");
+        //}).always(function () {
+        //    $.unblockUI();
+        //});
 
     }
 
